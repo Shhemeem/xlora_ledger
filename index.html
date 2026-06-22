@@ -56,11 +56,6 @@
       background: rgba(217, 119, 6, 0.5);
     }
     
-    /* Dynamic deflection flex visual effect */
-    .deflection-beam-base {
-      transition: transform 0.3s ease-out;
-    }
-
     /* Screen-only print utilities */
     #printable-workshop-sheet {
       display: none;
@@ -99,11 +94,11 @@
   <!-- ==========================================
         GLOBAL HEADER / BRAND BANNER
         ========================================== -->
-  <header class="border-b border-slate-200 bg-white/90 backdrop-blur-md sticky top-0 z-30 px-4 py-4 transition-all screen-only shadow-sm">
-    <div class="max-w-7xl mx-auto flex items-center justify-between">
-      <div class="flex items-center gap-3">
+  <header class="border-b border-slate-200 bg-white/90 backdrop-blur-md sticky top-0 z-30 px-3 sm:px-4 py-3 sm:py-4 transition-all screen-only shadow-sm">
+    <div class="max-w-7xl mx-auto flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
+      <div class="flex items-start sm:items-center gap-3 w-full min-w-0">
         <!-- Brand Interactive App Icon -->
-        <div onclick="openModal('downloadAppModal')" class="bg-gradient-to-tr from-slate-900 to-slate-800 text-amber-500 p-2.5 rounded-xl shadow-md cursor-pointer hover:scale-105 transition-transform flex items-center justify-center relative group" title="Install Mobile App">
+        <div onclick="openModal('downloadAppModal')" class="bg-gradient-to-tr from-slate-900 to-slate-800 text-amber-500 p-2.5 rounded-xl shadow-md cursor-pointer hover:scale-105 transition-transform flex items-center justify-center relative group flex-shrink-0" title="Install Mobile App">
           <div id="header-brand-icon-wrapper" class="w-5 h-5 flex items-center justify-center">
             <!-- Native SVG Icon / dynamic replacement inside JS -->
             <i data-lucide="ruler" class="w-5 h-5 stroke-[2.2]"></i>
@@ -113,22 +108,22 @@
             <span class="relative inline-flex rounded-full h-3 w-3 bg-amber-500"></span>
           </span>
         </div>
-        <div>
-          <div class="flex items-center gap-2">
-            <span class="font-extrabold text-lg tracking-tight bg-gradient-to-r from-slate-900 to-slate-750 bg-clip-text text-transparent">
+        <div class="min-w-0 flex-1">
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="font-extrabold text-lg tracking-tight bg-gradient-to-r from-slate-900 to-slate-750 bg-clip-text text-transparent max-w-[min(13rem,60vw)] sm:max-w-none truncate">
               xlora_measure
             </span>
             <span class="text-[10px] bg-amber-100 text-amber-700 border border-amber-200 px-1.5 py-0.5 rounded-md font-bold tracking-wide uppercase">
               v3.0 Production
             </span>
           </div>
-          <p class="text-[11px] text-slate-505 tracking-wide font-mono mt-0.5" id="studio-branding-container">
+          <p class="text-[11px] text-slate-505 tracking-wide font-mono mt-0.5 break-words" id="studio-branding-container">
             Bespoke Atelier: <strong class="text-slate-800 underline decoration-slate-400 underline-offset-4 cursor-pointer hover:decoration-amber-500 transition" onclick="toggleEditStudio(true)" id="studio-name-display">Aether Bespoke Craft</strong>
             <i data-lucide="settings" class="w-2.5 h-2.5 inline text-slate-400 hover:text-amber-600 transition ml-1"></i>
           </p>
           
           <!-- Atelier & App Branding configuration forms -->
-          <div id="studio-name-edit-form" class="hidden flex flex-col gap-2 mt-1.5 p-3.5 bg-slate-50 border border-slate-200 rounded-xl max-w-sm">
+          <div id="studio-name-edit-form" class="hidden flex flex-col gap-2 mt-1.5 p-3.5 bg-slate-50 border border-slate-200 rounded-xl max-w-full sm:max-w-sm">
             <div>
               <label class="block text-[8px] text-slate-500 uppercase font-black mb-1 font-mono">Atelier Studio Name</label>
               <input type="text" id="studio-name-input" class="w-full bg-white text-slate-800 px-3 py-1.5 rounded-lg border border-slate-300 text-xs placeholder:text-slate-400 focus:outline-none focus:border-amber-500 transition-all">
@@ -138,7 +133,7 @@
               <input type="file" id="app-icon-upload" accept="image/*" onchange="handleAppIconUploadChange()" class="text-[10px] text-slate-500 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-[10px] file:font-semibold file:bg-slate-200 file:text-slate-700 hover:file:bg-slate-305">
               <p class="text-[8.5px] text-slate-400 mt-1 font-sans">Recommended size: 512x512px. SVG, PNG or JPEG formats accepted.</p>
             </div>
-            <div class="flex items-center gap-2 pt-1 border-t border-slate-200 mt-1">
+            <div class="flex flex-wrap items-center gap-2 pt-1 border-t border-slate-200 mt-1">
               <button onclick="saveStudioNameAndIcon()" class="text-amber-600 hover:text-amber-700 font-bold text-[9px] uppercase tracking-wider font-mono">Save Studio Settings</button>
               <button onclick="resetAppIconToDefault()" class="text-rose-600 hover:text-rose-700 font-bold text-[9px] uppercase tracking-wider font-mono">Reset Icon</button>
               <button onclick="toggleEditStudio(false)" class="text-slate-400 hover:text-slate-505 font-bold text-[9px] uppercase tracking-wider font-mono">Cancel</button>
@@ -147,7 +142,7 @@
         </div>
       </div>
 
-      <div class="flex items-center gap-3">
+      <div class="flex flex-wrap items-center justify-start xl:justify-end gap-2 w-full xl:w-auto">
         <!-- Mobile Client Download Button -->
         <button onclick="openModal('downloadAppModal')" class="hidden sm:flex items-center gap-1.5 bg-amber-50 hover:bg-amber-100 text-amber-800 text-xs px-3.5 py-2 rounded-xl border border-amber-200/60 font-bold transition shadow-sm">
           <i data-lucide="smartphone" class="w-3.5 h-3.5"></i>
@@ -176,10 +171,10 @@
           </div>
         </div>
 
-        <div class="flex items-center gap-2" id="sync-status-indicator">
-          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-[11px] font-mono border border-emerald-200">
+        <div class="flex items-center gap-2 min-w-0" id="sync-status-indicator">
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-[11px] font-mono border border-emerald-200 max-w-full">
             <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-ping"></span>
-            <span id="sync-status-text">Connecting spec registry...</span>
+            <span id="sync-status-text" class="truncate">Connecting spec registry...</span>
           </span>
         </div>
       </div>
@@ -192,10 +187,10 @@
   <!-- ==========================================
         MAIN AREA: DESIGNER DASHBOARD
         ========================================== -->
-  <main id="designer-view" class="flex-1 max-w-7xl w-full mx-auto p-4 lg:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 screen-only">
+  <main id="designer-view" class="flex-1 max-w-7xl w-full mx-auto p-3 sm:p-4 lg:p-6 grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6 screen-only">
     
     <!-- LEFT SIDEBAR: CLIENT FILES & TOOLS -->
-    <section class="lg:col-span-4 flex flex-col gap-5 border-r border-slate-200/80 lg:pr-6">
+    <section class="lg:col-span-4 flex flex-col gap-4 lg:gap-5 border-b lg:border-b-0 lg:border-r border-slate-200/80 pb-4 lg:pb-0 lg:pr-6">
       
       <!-- Studio Overview Dashboard -->
       <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm relative overflow-hidden">
@@ -220,68 +215,6 @@
           <i data-lucide="plus" class="w-4 h-4 stroke-[2.5]"></i>
           Initiate Custom Project
         </button>
-      </div>
-
-      <!-- Advanced Woodcraft Deflection & Mechanics Simulator -->
-      <div class="bg-white border border-slate-200 rounded-2xl p-4 flex flex-col gap-3 shadow-sm">
-        <div class="flex items-center justify-between pb-1.5 border-b border-slate-100">
-          <div class="flex items-center gap-2">
-            <i data-lucide="calculator" class="w-3.5 h-3.5 text-amber-600"></i>
-            <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider font-mono">Sizing & Deflection Lab</h3>
-          </div>
-          <span class="text-[9px] font-mono text-slate-400">Beam Deflection Formula</span>
-        </div>
-        
-        <div class="space-y-3">
-          <div>
-            <label class="block text-[8px] text-slate-405 uppercase font-black mb-1 font-mono">Wood Species</label>
-            <select id="simulator-species" onchange="runSimulatorCalculation()" class="w-full bg-slate-50 border border-slate-200 text-slate-800 rounded-xl p-2.5 text-xs focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500/30 transition-all font-mono">
-              <option value="Walnut">Black Walnut (E: 1.68M psi)</option>
-              <option value="Oak">White Oak (E: 1.82M psi)</option>
-              <option value="Maple">Hard Maple (E: 1.83M psi)</option>
-              <option value="Cherry">Black Cherry (E: 1.49M psi)</option>
-              <option value="Pine">Yellow Pine (E: 1.63M psi)</option>
-            </select>
-          </div>
-
-          <div class="grid grid-cols-3 gap-2">
-            <div>
-              <label class="block text-[8px] text-slate-405 uppercase font-black mb-1 font-mono">Length</label>
-              <div class="flex rounded-xl overflow-hidden border border-slate-200 bg-slate-50 focus-within:border-amber-500 focus-within:ring-1 focus-within:ring-amber-500/30 transition-all">
-                <input type="number" id="simulator-length" value="60" oninput="runSimulatorCalculation()" class="w-full bg-transparent p-1.5 text-xs font-mono text-center text-slate-800 focus:outline-none">
-                <span class="flex items-center justify-center bg-slate-100 px-2 text-[9px] text-slate-500 font-bold border-l border-slate-200 font-mono">in</span>
-              </div>
-            </div>
-            <div>
-              <label class="block text-[8px] text-slate-405 uppercase font-black mb-1 font-mono">Width</label>
-              <div class="flex rounded-xl overflow-hidden border border-slate-200 bg-slate-50 focus-within:border-amber-500 focus-within:ring-1 focus-within:ring-amber-500/30 transition-all">
-                <input type="number" id="simulator-width" value="12" oninput="runSimulatorCalculation()" class="w-full bg-transparent p-1.5 text-xs font-mono text-center text-slate-800 focus:outline-none">
-                <span class="flex items-center justify-center bg-slate-100 px-2 text-[9px] text-slate-500 font-bold border-l border-slate-200 font-mono">in</span>
-              </div>
-            </div>
-            <div>
-              <label class="block text-[8px] text-slate-405 uppercase font-black mb-1 font-mono">Thick</label>
-              <div class="flex rounded-xl overflow-hidden border border-slate-200 bg-slate-50 focus-within:border-amber-500 focus-within:ring-1 focus-within:ring-amber-500/30 transition-all">
-                <input type="number" id="simulator-thickness" value="1.5" step="0.25" oninput="runSimulatorCalculation()" class="w-full bg-transparent p-1.5 text-xs font-mono text-center text-slate-800 focus:outline-none">
-                <span class="flex items-center justify-center bg-slate-100 px-2 text-[9px] text-slate-500 font-bold border-l border-slate-200 font-mono">in</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Graphical Dynamic Sag Visualization -->
-          <div class="bg-slate-50 p-2 rounded-xl border border-slate-100 flex flex-col gap-1 relative overflow-hidden">
-            <span class="text-[8px] font-mono text-slate-400 block">Span Deflection Curve Load Model (Center Weight: 150 lbs)</span>
-            <svg id="simulator-svg" viewBox="0 0 200 40" class="w-full h-8 bg-white rounded border border-slate-200">
-              <line x1="10" y1="20" x2="190" y2="20" stroke="rgba(15, 23, 42, 0.08)" stroke-dasharray="2,2"/>
-              <path id="simulator-beam-path" d="M 10 20 Q 100 20 190 20" fill="none" stroke="#d97706" stroke-width="2.5" class="deflection-beam-base"/>
-              <circle cx="100" id="simulator-weight-marker" cy="20" r="3" fill="#ef4444" />
-            </svg>
-            <div class="flex justify-between items-center text-[9px] font-mono mt-1">
-              <span class="text-slate-500">Moment of Inertia (I): <strong id="sim-i-val" class="text-slate-700">0.00</strong> in⁴</span>
-              <span class="text-slate-500">Theoretical Sag: <strong id="sim-sag-val" class="text-amber-605 font-bold">0.000"</strong> <span class="text-[8.5px] text-slate-400 font-bold font-mono">in</span></span>
-            </div>
-          </div>
-        </div>
       </div>
 
       <!-- Live Search & Filter Bar -->
@@ -1132,7 +1065,6 @@
       clients: [],
       activeTab: 'workpieces', // 'workpieces' | 'site-measures'
       portalTab: 'workpieces', // 'workpieces' | 'site-measures'
-      selectedWood: 'Walnut',
       categoryFilter: 'All',
       searchTerm: '',
       studioName: localStorage.getItem('cs_studio_name') || 'Aether Bespoke Craft',
@@ -1610,92 +1542,6 @@
       }
     };
 
-    // Real-Time Mechanical Deflection / Sag Estimator (Sagulator Algorithm)
-    window.calculateDeflection = (dimensions, woodType) => {
-      const L = parseFloat(dimensions?.length) || 0;
-      const W = parseFloat(dimensions?.width) || 0;
-      const T = parseFloat(dimensions?.depth) || 0;
-      
-      const lUnit = dimensions?.lengthUnit || 'inches';
-      const wUnit = dimensions?.widthUnit || 'inches';
-      const tUnit = dimensions?.depthUnit || 'inches';
-
-      if (L <= 0 || W <= 0 || T <= 0) return null;
-
-      // Elasticity modulus values in PSI (lb/in²)
-      const modulusTable = {
-        Walnut: 1680000,
-        Oak: 1820000,
-        Maple: 1830000,
-        Cherry: 1490000,
-        Pine: 1630000
-      };
-
-      const E = modulusTable[woodType] || 1500000;
-      
-      // Approximate densities in lb/in³
-      const densities = {
-        Walnut: 0.023,
-        Oak: 0.027,
-        Maple: 0.025,
-        Cherry: 0.021,
-        Pine: 0.016
-      };
-      
-      const density = densities[woodType] || 0.022;
-
-      // Normalize all dimensions to inches for structural mechanics calculations
-      const lengthIn = convertToInches(L, lUnit);
-      const widthIn = convertToInches(W, wUnit);
-      const thickIn = convertToInches(T, tUnit);
-
-      const volume = lengthIn * widthIn * thickIn;
-      const weight = volume * density; // Total board weight in lbs
-
-      // Moment of Inertia (Solid Plank): I = (W * T^3) / 12
-      const I = (widthIn * Math.pow(thickIn, 3)) / 12;
-
-      // Estimate center-load deflection under standard weight load (150 lbs load)
-      const load = 150; 
-      const deflectionVal = (load * Math.pow(lengthIn, 3)) / (48 * E * I);
-      
-      // Calculate self-weight deflection (Distributed load sag)
-      const selfDef = (5 * weight * Math.pow(lengthIn, 3)) / (384 * E * I);
-      const totalDef = deflectionVal + selfDef;
-
-      return {
-        weight: weight.toFixed(1),
-        inertia: I.toFixed(2),
-        deflection: totalDef.toFixed(3),
-        rating: totalDef < 0.03 ? 'Stable (Excellent)' : totalDef < 0.09 ? 'Acceptable Flex' : 'Risk of High Sag!'
-      };
-    };
-
-    // Sizing & Deflection Lab Simulator Calculator (Standalone Desktop Sandbox Model)
-    window.runSimulatorCalculation = () => {
-      const wood = document.getElementById('simulator-species').value;
-      const length = parseFloat(document.getElementById('simulator-length').value) || 0;
-      const width = parseFloat(document.getElementById('simulator-width').value) || 0;
-      const thickness = parseFloat(document.getElementById('simulator-thickness').value) || 0;
-
-      const sagData = calculateDeflection({ 
-        length, lengthUnit: 'inches', 
-        width, widthUnit: 'inches', 
-        depth: thickness, depthUnit: 'inches' 
-      }, wood);
-
-      if (sagData) {
-        document.getElementById('sim-i-val').textContent = sagData.inertia;
-        document.getElementById('sim-sag-val').textContent = `${sagData.deflection}"`;
-
-        // Update beam bending path based on calculated deflection ratio
-        const normalizedDeflection = Math.min(parseFloat(sagData.deflection) * 150, 16);
-        const curvePath = `M 10 20 Q 100 ${20 + normalizedDeflection} 190 20`;
-        document.getElementById('simulator-beam-path').setAttribute('d', curvePath);
-        document.getElementById('simulator-weight-marker').setAttribute('cy', 20 + normalizedDeflection);
-      }
-    };
-
     // Isometric SVG Blueprints Render generator (Optimized for Light Theme background)
     window.renderSVGBlueprint = (dimensions, woodType) => {
       const lRaw = parseFloat(dimensions?.length) || 48;
@@ -1983,9 +1829,6 @@
               const rate = rates[currentWood] || 12.00;
               const estimatedCost = (boardFeet * rate).toFixed(2);
 
-              // Calculate deflection sag parameters
-              const sagData = calculateDeflection(item.dimensions, currentWood);
-
               return `
                 <div id="workpiece-card-${item.id}" class="bg-white border border-slate-200 rounded-2xl overflow-hidden flex flex-col hover:border-slate-300 transition group shadow-sm relative animate-fade-in">
                   <div class="p-3 bg-slate-50 border-b border-slate-100">
@@ -2042,26 +1885,6 @@
                         </div>
                       </div>
                     </div>
-
-                    <!-- Material Physics (Live Calculation Module) -->
-                    ${sagData ? `
-                    <div class="bg-slate-50 border border-slate-100 p-2.5 rounded-xl text-[10px] font-mono space-y-1">
-                      <div class="flex justify-between items-center text-[8px] text-slate-500 font-bold uppercase tracking-wider">
-                        <span>Material Physics (Sagulator)</span>
-                        <span class="text-amber-500 font-extrabold">${sagData.rating}</span>
-                      </div>
-                      <div class="grid grid-cols-2 gap-1.5 pt-1 border-t border-slate-200/50">
-                        <div class="flex justify-between">
-                          <span class="text-slate-500">Net Weight:</span>
-                          <span class="text-slate-700 font-bold">${sagData.weight} lbs</span>
-                        </div>
-                        <div class="flex justify-between">
-                          <span class="text-slate-700 font-bold">Max Sag:</span>
-                          <span class="text-slate-700 font-bold">${sagData.deflection} in</span>
-                        </div>
-                      </div>
-                    </div>
-                    ` : ''}
 
                     <div class="flex justify-between items-center text-[10px] text-slate-500 border-t border-slate-100 pt-2 font-mono">
                       <span>Measured / Verified By:</span>
@@ -3200,7 +3023,6 @@
             ${client.items.map(item => {
               const dims = item.dimensions || {};
               const currentWood = item.woodType || 'Walnut';
-              const bgSagData = calculateDeflection(item.dimensions, currentWood);
 
               const l = parseFloat(dims.length) || 0;
               const w = parseFloat(dims.width) || 0;
@@ -3237,26 +3059,6 @@
                       <h3 class="text-sm font-black text-slate-805">${item.title}</h3>
                       ${item.notes ? `<p class="text-xs text-slate-500 mt-2.5 italic leading-relaxed">"${item.notes}"</p>` : ''}
                     </div>
-
-                    <!-- Material Physics Indicator for Client -->
-                    ${bgSagData ? `
-                    <div class="bg-slate-50 border border-slate-100 p-3 rounded-2xl text-[10.5px] font-mono space-y-1">
-                      <div class="flex justify-between items-center text-[8px] text-slate-400 font-bold uppercase tracking-wider">
-                        <span>Physical Properties (${currentWood})</span>
-                        <span class="text-amber-700 font-bold">${bgSagData.rating}</span>
-                      </div>
-                      <div class="grid grid-cols-2 gap-1.5 pt-1.5 border-t border-slate-200/50">
-                        <div class="flex justify-between">
-                          <span class="text-slate-400">Weight:</span>
-                          <span class="text-slate-750 font-bold">${bgSagData.weight} lbs</span>
-                        </div>
-                        <div class="flex justify-between">
-                          <span class="text-slate-400">Max Sag:</span>
-                          <span class="text-slate-750 font-bold">${bgSagData.deflection} in</span>
-                        </div>
-                      </div>
-                    </div>
-                    ` : ''}
 
                     <div class="flex justify-between items-center text-[10px] text-slate-500 font-mono bg-slate-50 p-2 rounded-lg border border-slate-100">
                       <span>Measured By:</span>
@@ -3605,7 +3407,6 @@
       }
       initializeFirebase();
       renderCategoryFilters();
-      runSimulatorCalculation();
       updateWebManifest();
       lucide.createIcons();
     });
