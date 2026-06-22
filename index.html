@@ -135,7 +135,7 @@
             </div>
             <div>
               <label class="block text-[8px] text-slate-500 uppercase font-black mb-1 font-mono">Upload Custom App Icon</label>
-              <input type="file" id="app-icon-upload" accept="image/*" class="text-[10px] text-slate-500 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-[10px] file:font-semibold file:bg-slate-200 file:text-slate-700 hover:file:bg-slate-305">
+              <input type="file" id="app-icon-upload" accept="image/*" onchange="handleAppIconUploadChange()" class="text-[10px] text-slate-500 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-[10px] file:font-semibold file:bg-slate-200 file:text-slate-700 hover:file:bg-slate-305">
               <p class="text-[8.5px] text-slate-400 mt-1 font-sans">Recommended size: 512x512px. SVG, PNG or JPEG formats accepted.</p>
             </div>
             <div class="flex items-center gap-2 pt-1 border-t border-slate-200 mt-1">
@@ -1315,20 +1315,38 @@
           updateAuthUI(usr);
           setupFirestoreSubscription(usr.uid);
 
-          // Synchronize and load Bespoke Atelier name from private settings collection
+          // Synchronize and load Bespoke Atelier branding from private settings collection
           if (!usr.isAnonymous && db) {
             try {
               const settingsRef = doc(db, 'artifacts', appId, 'users', usr.uid, 'settings', 'studio');
               const docSnap = await getDoc(settingsRef);
-              if (docSnap.exists() && docSnap.data().studioName) {
-                appState.studioName = docSnap.data().studioName;
-                localStorage.setItem('cs_studio_name', appState.studioName);
+              if (docSnap.exists()) {
+                const settingsData = docSnap.data();
                 const displayEl = document.getElementById('studio-name-display');
-                if (displayEl) displayEl.textContent = appState.studioName;
+
+                if (settingsData.studioName) {
+                  appState.studioName = settingsData.studioName;
+                  localStorage.setItem('cs_studio_name', appState.studioName);
+                  if (displayEl) displayEl.textContent = appState.studioName;
+                }
+
+                if (Object.prototype.hasOwnProperty.call(settingsData, 'appIcon')) {
+                  appState.appIcon = settingsData.appIcon || '';
+                  if (appState.appIcon) {
+                    localStorage.setItem('cs_app_icon', appState.appIcon);
+                  } else {
+                    localStorage.removeItem('cs_app_icon');
+                  }
+                  applyCustomAppIcon(appState.appIcon || defaultIconBase64);
+                  updateWebManifest();
+                } else if (appState.appIcon) {
+                  await setDoc(settingsRef, { appIcon: appState.appIcon }, { merge: true });
+                }
               } else {
-                // If cloud settings do not exist, upload current local studio name to initialize cloud setting
+                // If cloud settings do not exist, upload current local branding to initialize cloud setting
                 const currentLocalName = localStorage.getItem('cs_studio_name') || 'Aether Bespoke Craft';
-                await setDoc(settingsRef, { studioName: currentLocalName }, { merge: true });
+                const currentLocalIcon = localStorage.getItem('cs_app_icon') || '';
+                await setDoc(settingsRef, { studioName: currentLocalName, appIcon: currentLocalIcon }, { merge: true });
               }
             } catch (err) {
               console.error("Error syncing bespoke studio settings with database:", err);
@@ -2405,6 +2423,58 @@
       }
     };
 
+    const syncStudioBrandingSettings = async (successMessage = '', failureMessage = '') => {
+      if (!appState.isOffline && db && auth?.currentUser && !auth.currentUser.isAnonymous) {
+        try {
+          const userId = auth.currentUser.uid;
+          const settingsRef = doc(db, 'artifacts', appId, 'users', userId, 'settings', 'studio');
+          await setDoc(settingsRef, {
+            studioName: appState.studioName,
+            appIcon: appState.appIcon
+          }, { merge: true });
+          if (successMessage) triggerToast(successMessage);
+          return 'cloud';
+        } catch (err) {
+          if (failureMessage) triggerToast(failureMessage, "warning");
+          return 'failed';
+        }
+      }
+      return 'local';
+    };
+
+    const persistAppIconFile = async (file, { showToast = true, syncNow = true } = {}) => {
+      if (!file) return false;
+
+      try {
+        const base64 = await compressImage(file);
+        appState.appIcon = base64;
+        localStorage.setItem('cs_app_icon', base64);
+        applyCustomAppIcon(base64);
+        updateWebManifest();
+
+        if (syncNow) {
+          const syncResult = await syncStudioBrandingSettings(
+            showToast ? "App icon uploaded and saved to your account!" : '',
+            showToast ? "App icon saved locally. Cloud Sync pending connection." : ''
+          );
+          if (showToast && syncResult === 'local') {
+            triggerToast("App icon uploaded and saved for next launch!");
+          }
+        }
+
+        return true;
+      } catch (err) {
+        triggerToast("Failed to process icon graphic.", "error");
+        return false;
+      }
+    };
+
+    window.handleAppIconUploadChange = async () => {
+      const iconInput = document.getElementById('app-icon-upload');
+      const saved = await persistAppIconFile(iconInput?.files?.[0]);
+      if (saved && iconInput) iconInput.value = '';
+    };
+
     window.saveStudioNameAndIcon = async () => {
       const name = document.getElementById('studio-name-input').value.trim();
       const iconInput = document.getElementById('app-icon-upload');
@@ -2416,45 +2486,42 @@
       }
 
       if (iconInput.files && iconInput.files[0]) {
-        try {
-          const base64 = await compressImage(iconInput.files[0]);
-          appState.appIcon = base64;
-          localStorage.setItem('cs_app_icon', base64);
-          applyCustomAppIcon(base64);
-        } catch (err) {
-          triggerToast("Failed to process icon graphic.", "error");
-        }
+        const iconSaved = await persistAppIconFile(iconInput.files[0], { showToast: false, syncNow: false });
+        if (iconSaved) iconInput.value = '';
       }
 
       // Re-compile Android dynamic PWA Web Manifest configurations
       updateWebManifest();
 
       // Cloud Persistence configuration
-      if (!appState.isOffline && db && auth?.currentUser && !auth.currentUser.isAnonymous) {
-        try {
-          const userId = auth.currentUser.uid;
-          const settingsRef = doc(db, 'artifacts', appId, 'users', userId, 'settings', 'studio');
-          await setDoc(settingsRef, { 
-            studioName: appState.studioName,
-            appIcon: appState.appIcon 
-          }, { merge: true });
-          triggerToast("Branding configuration synchronized to cloud account!");
-        } catch (err) {
-          triggerToast("Branding saved locally. Cloud Sync pending connection.", "warning");
-        }
-      } else {
+      const syncResult = await syncStudioBrandingSettings(
+        "Branding configuration synchronized to cloud account!",
+        "Branding saved locally. Cloud Sync pending connection."
+      );
+      if (syncResult === 'local') {
         triggerToast("Branding configuration saved locally!");
       }
 
       toggleEditStudio(false);
     };
 
-    window.resetAppIconToDefault = () => {
+    window.resetAppIconToDefault = async () => {
       appState.appIcon = "";
       localStorage.removeItem('cs_app_icon');
       applyCustomAppIcon(defaultIconBase64);
       updateWebManifest();
-      triggerToast("Branding icon reset to standard gold template.");
+      const syncResult = await syncStudioBrandingSettings(
+        "Branding icon reset to standard gold template.",
+        "Icon reset locally. Cloud Sync pending connection."
+      );
+      if (syncResult === 'local') {
+        triggerToast("Branding icon reset to standard gold template.");
+      }
+    };
+
+    const getDataUriMimeType = (dataUri, fallbackType = "image/svg+xml") => {
+      const match = String(dataUri || '').match(/^data:([^;,]+)/);
+      return match ? match[1] : fallbackType;
     };
 
     // Utility to apply base64 app icon to document, apple link, and preview displays
@@ -2463,9 +2530,16 @@
       const appleTouch = document.getElementById('app-apple-touch');
       const headerWrapper = document.getElementById('header-brand-icon-wrapper');
       const modalWrapper = document.getElementById('modal-app-icon-preview');
+      const iconMimeType = getDataUriMimeType(iconDataUri);
 
-      if (favicon) favicon.setAttribute('href', iconDataUri);
-      if (appleTouch) appleTouch.setAttribute('href', iconDataUri);
+      if (favicon) {
+        favicon.setAttribute('href', iconDataUri);
+        favicon.setAttribute('type', iconMimeType);
+      }
+      if (appleTouch) {
+        appleTouch.setAttribute('href', iconDataUri);
+        appleTouch.setAttribute('type', iconMimeType);
+      }
 
       const previewHtml = `<img src="${iconDataUri}" class="w-full h-full object-cover rounded-xl" alt="App Icon">`;
       if (headerWrapper) headerWrapper.innerHTML = previewHtml;
@@ -2476,6 +2550,7 @@
     const updateWebManifest = () => {
       const studioName = appState.studioName || "xlora_measure";
       const iconSrc = appState.appIcon || defaultIconBase64;
+      const iconMimeType = getDataUriMimeType(iconSrc);
       
       const manifestObject = {
         name: `${studioName} — Sizing Portal`,
@@ -2488,7 +2563,7 @@
           {
             src: iconSrc,
             sizes: "512x512",
-            type: "image/svg+xml"
+            type: iconMimeType
           }
         ]
       };
@@ -3536,5 +3611,4 @@
     });
   </script>
 </body>
-
 </html>
