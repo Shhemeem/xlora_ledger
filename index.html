@@ -1007,7 +1007,7 @@
     // Modern Firebase SDK imports conforming strictly to recommended guidelines
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js';
     import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js';
-    import { getFirestore, doc, getDoc, collection, onSnapshot, addDoc, updateDoc, deleteDoc } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js';
+    import { getFirestore, doc, getDoc, setDoc, collection, onSnapshot, addDoc, updateDoc, deleteDoc } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js';
 
     // Global state registry
     const appState = {
@@ -1168,6 +1168,26 @@
           appState.isOffline = false;
           updateAuthUI(usr);
           setupFirestoreSubscription(usr.uid);
+
+          // Synchronize and load Bespoke Atelier name from private settings collection
+          if (!usr.isAnonymous && db) {
+            try {
+              const settingsRef = doc(db, 'artifacts', appId, 'users', usr.uid, 'settings', 'studio');
+              const docSnap = await getDoc(settingsRef);
+              if (docSnap.exists() && docSnap.data().studioName) {
+                appState.studioName = docSnap.data().studioName;
+                localStorage.setItem('cs_studio_name', appState.studioName);
+                const displayEl = document.getElementById('studio-name-display');
+                if (displayEl) displayEl.textContent = appState.studioName;
+              } else {
+                // If cloud settings do not exist, upload current local studio name to initialize cloud setting
+                const currentLocalName = localStorage.getItem('cs_studio_name') || 'Aether Bespoke Craft';
+                await setDoc(settingsRef, { studioName: currentLocalName }, { merge: true });
+              }
+            } catch (err) {
+              console.error("Error syncing bespoke studio settings with database:", err);
+            }
+          }
         } else {
           try {
             // Keep guest/anon sessions unique to prevent collisions in public views (Rule 1 & Rule 3)
@@ -2239,13 +2259,28 @@
       }
     };
 
-    window.saveStudioName = () => {
-      const name = document.getElementById('studio-name-input').value;
+    window.saveStudioName = async () => {
+      const name = document.getElementById('studio-name-input').value.trim();
+      if (!name) return;
+
       appState.studioName = name;
       localStorage.setItem('cs_studio_name', name);
       document.getElementById('studio-name-display').textContent = name;
       toggleEditStudio(false);
-      triggerToast("Studio branding configurations saved!");
+
+      if (!appState.isOffline && db && auth?.currentUser && !auth.currentUser.isAnonymous) {
+        try {
+          const userId = auth.currentUser.uid;
+          const settingsRef = doc(db, 'artifacts', appId, 'users', userId, 'settings', 'studio');
+          await setDoc(settingsRef, { studioName: name }, { merge: true });
+          triggerToast("Studio branding saved to cloud account!");
+        } catch (err) {
+          console.error("Error saving Bespoke Atelier to database:", err);
+          triggerToast("Saved locally. Failed to sync to cloud.", "warning");
+        }
+      } else {
+        triggerToast("Studio branding configurations saved locally!");
+      }
     };
 
     window.toggleFormVisibility = () => {
