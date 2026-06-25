@@ -2589,7 +2589,37 @@
       if (modalWrapper) modalWrapper.innerHTML = `<img src="${iconDataUri}" class="w-full h-full object-cover rounded-2xl" alt="App Icon">`;
     };
 
-    // Dynamic Manifest creation leveraging chromium base64 encoding capability
+    // Dynamic PWA Implementation: Inline Service Worker
+    const registerInlineServiceWorker = () => {
+      if ('serviceWorker' in navigator) {
+        const swCode = `
+          self.addEventListener('install', (event) => {
+            self.skipWaiting();
+          });
+          self.addEventListener('activate', (event) => {
+            event.waitUntil(self.clients.claim());
+          });
+          self.addEventListener('fetch', (event) => {
+            // Minimal fetch interceptor to pass PWA installability checks
+            event.respondWith(
+              fetch(event.request).catch(() => new Response('Offline mode active.', {
+                headers: { 'Content-Type': 'text/plain' }
+              }))
+            );
+          });
+        `;
+        const blob = new Blob([swCode], { type: 'application/javascript' });
+        const swUrl = URL.createObjectURL(blob);
+        
+        navigator.serviceWorker.register(swUrl).then(registration => {
+          console.log('Inline Service Worker successfully registered to unlock PWA prompt.');
+        }).catch(err => {
+          console.log('Inline Service Worker registration skipped (expected in some sandboxed iframes).', err);
+        });
+      }
+    };
+
+    // Dynamic Manifest creation leveraging Blob injection for PWA requirements
     const updateWebManifest = () => {
       const studioName = appState.studioName || "xlora_measure";
       const iconSrc = appState.appIcon || defaultIconBase64;
@@ -2598,7 +2628,7 @@
       const manifestObject = {
         name: `${studioName} — Sizing Portal`,
         short_name: studioName,
-        start_url: window.location.origin + window.location.pathname,
+        start_url: window.location.href.split('?')[0],
         display: "standalone",
         background_color: "#f8fafc",
         theme_color: "#0f172a",
@@ -2620,8 +2650,9 @@
 
       const manifestLink = document.getElementById('dynamic-manifest');
       if (manifestLink) {
-        const manifestDataUrl = "data:application/manifest+json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(manifestObject))));
-        manifestLink.setAttribute('href', manifestDataUrl);
+        const blob = new Blob([JSON.stringify(manifestObject)], { type: 'application/manifest+json' });
+        const manifestUrl = URL.createObjectURL(blob);
+        manifestLink.setAttribute('href', manifestUrl);
       }
 
       const instTitle = document.getElementById('install-app-studio-title');
@@ -3758,6 +3789,9 @@
       } else {
         applyCustomAppIcon(defaultIconBase64);
       }
+
+      // Initialize Dynamic PWA Service Worker
+      registerInlineServiceWorker();
 
       // Automatically hide PWA install button if running in Native Standalone mode
       if (isStandalone) {
