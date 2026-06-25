@@ -109,7 +109,7 @@
         </div>
         <div class="min-w-0 flex-1">
           <div class="flex flex-wrap items-center gap-2">
-            <span class="font-extrabold text-lg tracking-tight bg-gradient-to-r from-slate-900 to-slate-750 bg-clip-text text-transparent max-w-[min(13rem,60vw)] sm:max-w-none truncate">
+            <span class="font-extrabold text-lg tracking-tight bg-gradient-to-r from-slate-900 to-amber-700 bg-clip-text text-transparent max-w-[min(13rem,60vw)] sm:max-w-none truncate">
               xlora_measure
             </span>
             <span class="text-[10px] bg-amber-100 text-amber-700 border border-amber-200 px-1.5 py-0.5 rounded-md font-bold tracking-wide uppercase">
@@ -117,7 +117,7 @@
             </span>
           </div>
           <p class="text-[11px] text-slate-505 tracking-wide font-mono mt-0.5 break-words" id="studio-branding-container">
-            Besoke Atelier: <strong class="text-slate-800 underline decoration-slate-400 underline-offset-4 cursor-pointer hover:decoration-amber-500 transition" onclick="toggleEditStudio(true)" id="studio-name-display">Aether Bespoke Craft</strong>
+            Bespoke Atelier: <strong class="text-slate-800 underline decoration-slate-400 underline-offset-4 cursor-pointer hover:decoration-amber-500 transition" onclick="toggleEditStudio(true)" id="studio-name-display">Aether Bespoke Craft</strong>
             <i data-lucide="settings" class="w-2.5 h-2.5 inline text-slate-400 hover:text-amber-600 transition ml-1"></i>
           </p>
           
@@ -130,7 +130,7 @@
             <div>
               <label class="block text-[8px] text-slate-500 uppercase font-black mb-1 font-mono">Upload Custom App Icon</label>
               <input type="file" id="app-icon-upload" accept="image/*" onchange="handleAppIconUploadChange()" class="text-[10px] text-slate-505 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-[10px] file:font-semibold file:bg-slate-200 file:text-slate-707 hover:file:bg-slate-305">
-              <p class="text-[8.5px] text-slate-400 mt-1 font-sans">Recommended size: 512x512px. SVG, PNG or JPEG formats accepted.</p>
+              <p class="text-[8.5px] text-slate-404 mt-1 font-sans">Recommended size: 512x512px. SVG, PNG or JPEG formats accepted.</p>
             </div>
             <div class="flex flex-wrap items-center gap-2 pt-1 border-t border-slate-200 mt-1">
               <button onclick="saveStudioNameAndIcon()" class="text-amber-600 hover:text-amber-707 font-bold text-[9px] uppercase tracking-wider font-mono">Save Studio Settings</button>
@@ -143,9 +143,9 @@
 
       <div class="flex flex-wrap items-center justify-start xl:justify-end gap-2 w-full xl:w-auto">
         <!-- Mobile Client Download Button -->
-        <button onclick="openModal('downloadAppModal')" class="hidden sm:flex items-center gap-1.5 bg-amber-50 hover:bg-amber-100 text-amber-808 text-xs px-3.5 py-2 rounded-xl border border-amber-200/60 font-bold transition shadow-sm">
+        <button id="header-install-btn" onclick="openModal('downloadAppModal')" class="hidden sm:flex items-center gap-1.5 bg-amber-50 hover:bg-amber-100 text-amber-808 text-xs px-3.5 py-2 rounded-xl border border-amber-200/60 font-bold transition shadow-sm">
           <i data-lucide="smartphone" class="w-3.5 h-3.5"></i>
-          <span>Get Mobile App</span>
+          <span id="header-install-btn-text">Get Mobile App</span>
         </button>
 
         <div id="portal-navigation-wrapper" class="flex items-center gap-2">
@@ -164,7 +164,7 @@
           <div id="user-profile-badge" class="hidden flex items-center gap-2 bg-white border border-slate-200 px-3 py-1.5 rounded-xl shadow-sm">
             <div class="w-5 h-5 rounded-full bg-gradient-to-tr from-amber-500 to-amber-600 text-white flex items-center justify-center font-bold text-[10px]" id="user-avatar-initials">U</div>
             <span id="user-email-display" class="text-xs text-slate-606 font-mono hidden sm:inline max-w-[120px] truncate">User</span>
-            <button onclick="handleSignOut()" class="text-slate-400 hover:text-rose-600 p-0.5 transition" title="Sign Out">
+            <button onclick="handleSignOut()" class="text-slate-404 hover:text-rose-600 p-0.5 transition" title="Sign Out">
               <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
             </button>
           </div>
@@ -214,6 +214,47 @@
           <i data-lucide="plus" class="w-4 h-4 stroke-[2.5]"></i>
           Initiate Custom Project
         </button>
+      </div>
+
+      <!-- Quick Sizing & Unit Calculator Utility -->
+      <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
+        <div class="flex items-center gap-1.5 mb-2 border-b border-slate-100 pb-2">
+          <i data-lucide="calculator" class="w-4 h-4 text-amber-600"></i>
+          <h3 class="font-extrabold text-[10px] tracking-wider uppercase text-slate-707 font-mono">Quick Unit Converter</h3>
+        </div>
+        <div class="grid grid-cols-2 gap-2 text-xs">
+          <div>
+            <label class="block text-[8px] uppercase font-bold text-slate-404 font-mono mb-1">Value</label>
+            <input type="number" id="calc-input-value" value="1" oninput="runUnitConversion()" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-2 py-1 text-xs font-mono focus:outline-none focus:border-amber-500">
+          </div>
+          <div>
+            <label class="block text-[8px] uppercase font-bold text-slate-404 font-mono mb-1">From Unit</label>
+            <select id="calc-input-unit" onchange="runUnitConversion()" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-2 py-1 text-xs font-mono focus:outline-none focus:border-amber-500">
+              <option value="in">Inches (in)</option>
+              <option value="ft">Feet (ft)</option>
+              <option value="cm">Centimeters (cm)</option>
+              <option value="mm">Millimeters (mm)</option>
+            </select>
+          </div>
+        </div>
+        <div class="grid grid-cols-4 gap-1.5 mt-3 text-center text-[10px] font-mono">
+          <div class="bg-slate-50 p-1.5 rounded border border-slate-100">
+            <span class="text-[7px] text-slate-400 block uppercase">Inches</span>
+            <span id="calc-out-in" class="font-bold text-slate-707">1.00</span>
+          </div>
+          <div class="bg-slate-50 p-1.5 rounded border border-slate-100">
+            <span class="text-[7px] text-slate-400 block uppercase">Feet</span>
+            <span id="calc-out-ft" class="font-bold text-slate-707">0.08</span>
+          </div>
+          <div class="bg-slate-50 p-1.5 rounded border border-slate-100">
+            <span class="text-[7px] text-slate-400 block uppercase">Cm</span>
+            <span id="calc-out-cm" class="font-bold text-slate-707">2.54</span>
+          </div>
+          <div class="bg-slate-50 p-1.5 rounded border border-slate-100">
+            <span class="text-[7px] text-slate-400 block uppercase">Mm</span>
+            <span id="calc-out-mm" class="font-bold text-slate-707">25.40</span>
+          </div>
+        </div>
       </div>
 
       <!-- Live Search & Filter Bar -->
@@ -314,10 +355,14 @@
               <i data-lucide="home" class="w-4 h-4"></i>
               Site Clearance Logs (<span id="tab-site-count" class="font-mono font-bold">0</span>)
             </button>
+            <button onclick="setActiveTab('ai-advisor')" id="tab-ai-btn" class="pb-3 text-xs font-black uppercase tracking-widest flex items-center gap-2 border-b-2 border-transparent text-slate-500 hover:text-slate-805 transition">
+              <i data-lucide="sparkles" class="w-4 h-4 text-amber-600"></i>
+              AI Advisor
+            </button>
           </div>
 
           <div class="flex gap-2">
-            <button onclick="openPrintPreview()" class="bg-white hover:bg-slate-50 text-slate-705 border border-slate-205 rounded-xl px-3.5 py-2 text-xs font-semibold flex items-center gap-1.5 transition shadow-sm" title="Workshop printable specifications">
+            <button onclick="openPrintPreview()" class="bg-white hover:bg-slate-50 text-slate-707 border border-slate-202 rounded-xl px-3.5 py-2 text-xs font-semibold flex items-center gap-1.5 transition shadow-sm" title="Workshop printable specifications">
               <i data-lucide="printer" class="w-3.5 h-3.5 text-amber-600"></i>
               Workshop Sheet
             </button>
@@ -361,26 +406,26 @@
 
         <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-100 pb-6 mb-6">
           <div>
-            <span class="text-[10px] font-bold tracking-widest text-amber-707 uppercase bg-amber-50 px-3 py-1 rounded-full border border-amber-202 font-mono">
+            <span class="text-[10px] font-bold tracking-widest text-amber-707 uppercase bg-amber-50 px-3 py-1 rounded-full border border-amber-200 font-mono">
               Architectural Sizing Portal
             </span>
-            <h1 class="text-2xl lg:text-3xl font-black text-slate-850 mt-2">
+            <h1 class="text-2xl lg:text-3xl font-black text-slate-800 mt-2">
               Hello, <span id="client-portal-name">Client Name</span>
             </h1>
-            <p class="text-xs text-slate-505 mt-1.5 max-w-xl leading-relaxed">
+            <p class="text-xs text-slate-500 mt-1.5 max-w-xl leading-relaxed">
               Your custom layouts compiled with workshop-grade precision by <strong id="client-portal-studio-title">Aether Bespoke Craft</strong>. Review dimensions, clearances, and blueprints below to lock in the final cut sheet.
             </p>
           </div>
 
           <div class="flex items-center gap-2">
-            <span class="text-xs text-slate-404 font-mono">State:</span>
+            <span class="text-xs text-slate-400 font-mono">State:</span>
             <span id="client-portal-status-badge" class="text-xs px-3 py-1 rounded-full font-bold uppercase tracking-wider border"></span>
           </div>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs leading-relaxed text-slate-500">
           <div>
-            <strong class="text-slate-750 block mb-1 font-mono">Directives Brief</strong>
+            <strong class="text-slate-700 block mb-1 font-mono">Directives Brief</strong>
             <span id="client-portal-brief-text" class="italic"></span>
           </div>
           <div class="flex flex-col gap-2 md:items-end justify-center" id="client-portal-signoff-action-container">
@@ -391,11 +436,11 @@
 
       <!-- PORTAL TABS -->
       <div class="flex gap-4 border-b border-slate-200">
-        <button onclick="setPortalTab('workpieces')" id="portal-tab-workpieces" class="pb-3 text-xs font-black uppercase tracking-widest flex items-center gap-2 border-b-2 border-amber-500 text-amber-700 transition">
+        <button onclick="setPortalTab('workpieces')" id="portal-tab-workpieces" class="pb-3 text-xs font-black uppercase tracking-widest flex items-center gap-2 border-b-2 border-amber-500 text-amber-606 transition">
           <i data-lucide="layers" class="w-4 h-4"></i>
           Proposed Designs (<span id="portal-workpieces-count" class="font-mono">0</span>)
         </button>
-        <button onclick="setPortalTab('site-measures')" id="portal-tab-site" class="pb-3 text-xs font-black uppercase tracking-widest flex items-center gap-2 border-b-2 border-transparent text-slate-500 hover:text-slate-850 transition">
+        <button onclick="setPortalTab('site-measures')" id="portal-tab-site" class="pb-3 text-xs font-black uppercase tracking-widest flex items-center gap-2 border-b-2 border-transparent text-slate-500 hover:text-slate-805 transition">
           <i data-lucide="home" class="w-4 h-4"></i>
           Physical Site Assessment (<span id="portal-site-count" class="font-mono font-bold">0</span>)
         </button>
@@ -459,11 +504,20 @@
           </div>
           <div>
             <h4 class="font-black text-sm text-slate-800" id="install-app-studio-title">xlora_measure Mobile Workspace</h4>
-            <p class="text-[11px] text-slate-505 leading-relaxed mt-1">Get native, full-screen offline access on your device. Zero app store account required to run.</p>
+            <p class="text-[11px] text-slate-555 leading-relaxed mt-1">Get native, full-screen offline access on your device. Zero app store account required to run.</p>
           </div>
         </div>
 
-        <div class="grid grid-cols-2 gap-4">
+        <!-- Standalone Indicator Alert Banner -->
+        <div id="installed-active-banner" class="hidden bg-emerald-50 border border-emerald-200 rounded-xl p-3.5 flex items-center gap-2.5 text-emerald-800">
+          <i data-lucide="check-circle" class="w-5 h-5 text-emerald-600 shrink-0"></i>
+          <div>
+            <p class="font-extrabold uppercase text-[9px] tracking-wider font-mono">App Installed & Active</p>
+            <p class="text-[10px] mt-0.5 opacity-90 leading-tight">You are currently running directly inside the native web app workspace environment.</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <!-- Apple Safari iOS Column -->
           <div class="border border-slate-200 rounded-xl p-4 flex flex-col justify-between space-y-3 bg-slate-50/50">
             <div class="space-y-1">
@@ -472,24 +526,31 @@
             </div>
             <ol class="space-y-2 text-[10.5px] text-slate-600 leading-relaxed list-decimal pl-4">
               <li>Open this page inside Apple <strong class="text-slate-800">Safari</strong>.</li>
-              <li>Tap the browser <strong class="text-slate-800">Share</strong> icon.</li>
+              <li>Tap the browser <strong class="text-slate-800">Share</strong> icon <i data-lucide="share" class="w-3.5 h-3.5 inline mx-0.5 text-amber-600"></i>.</li>
               <li>Select <strong class="text-slate-800">Add to Home Screen</strong>.</li>
             </ol>
-            <button onclick="triggerToast('Open this page in iOS Safari to enable layout installation.')" class="w-full bg-slate-900 hover:bg-slate-850 text-white font-bold py-2 rounded-lg text-[10px] tracking-wide uppercase transition font-mono">iOS Instructions</button>
+            <button onclick="triggerToast('Open this page in iOS Safari to enable direct homescreen pinning.')" class="w-full bg-slate-900 hover:bg-slate-850 text-white font-bold py-2 rounded-lg text-[10px] tracking-wide uppercase transition font-mono">iOS Safari Hints</button>
           </div>
 
-          <!-- Google Chrome Android Column -->
+          <!-- Google Chrome Android & Desktop Column -->
           <div class="border border-slate-200 rounded-xl p-4 flex flex-col justify-between space-y-3 bg-slate-50/50">
             <div class="space-y-1">
-              <span class="text-[9px] uppercase font-bold text-slate-404 tracking-wider font-mono">Google Mobile</span>
-              <h5 class="font-black text-xs text-slate-855">Android Installer</h5>
+              <span class="text-[9px] uppercase font-bold text-slate-404 tracking-wider font-mono">Google Mobile & Desktop</span>
+              <h5 class="font-black text-xs text-slate-855">Android & Chrome</h5>
             </div>
-            <ol class="space-y-2 text-[10.5px] text-slate-600 leading-relaxed list-decimal pl-4">
-              <li>Launch this workspace in Chrome.</li>
-              <li>Wait for the prompt trigger.</li>
-              <li>Click the instant install button below.</li>
+            <ol class="space-y-2 text-[10.5px] text-slate-600 leading-relaxed list-decimal pl-4" id="android-instructions-list">
+              <li>Deploy native installation process.</li>
+              <li>Accept the prompt on screen.</li>
+              <li>Or pin manually using the browser menu.</li>
             </ol>
-            <button id="btn-android-install" onclick="triggerAndroidPWAInstall()" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-955 font-black py-2 rounded-lg text-[10px] tracking-wide uppercase transition font-mono opacity-50 cursor-not-allowed" disabled>Android Install</button>
+            <div class="space-y-2">
+              <button id="btn-android-install" onclick="triggerAndroidPWAInstall()" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-black py-2 rounded-lg text-[10px] tracking-wide uppercase transition font-mono shadow-sm">
+                Install Web App
+              </button>
+              <p id="fallback-install-tip" class="text-[9px] text-slate-500 text-center leading-normal italic">
+                Waiting for installation criteria...
+              </p>
+            </div>
           </div>
         </div>
       </div>
@@ -535,7 +596,7 @@
 
         <div class="flex items-center justify-end gap-2 border-t border-slate-100 pt-3">
           <button type="button" onclick="closeModal('authModal')" class="bg-transparent hover:bg-slate-50 text-slate-505 text-xs px-4 py-2 rounded-xl transition font-mono">Cancel</button>
-          <button id="auth-submit-btn" type="submit" class="bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-black px-5 py-2.5 rounded-xl transition flex items-center justify-center gap-1.5 shadow-sm uppercase tracking-wider font-mono">
+          <button id="auth-submit-btn" type="submit" class="bg-amber-500 hover:bg-amber-600 text-slate-955 text-xs font-black px-5 py-2.5 rounded-xl transition flex items-center justify-center gap-1.5 shadow-sm uppercase tracking-wider font-mono">
             Deploy Session
           </button>
         </div>
@@ -790,14 +851,14 @@
 
         <div class="flex items-center justify-end gap-2 border-t border-slate-100 pt-3.5">
           <button type="button" onclick="closeWorkpieceModal()" class="bg-transparent hover:bg-slate-50 text-slate-555 text-xs px-4 py-2 rounded-xl transition font-mono">Cancel</button>
-          <button id="workpiece-modal-submit-btn" type="submit" class="bg-amber-500 hover:bg-amber-600 text-slate-955 text-xs font-bold px-4 py-2 rounded-xl transition font-mono">Deploy Workpiece Specs</button>
+          <button id="workpiece-modal-submit-btn" type="submit" class="bg-amber-500 hover:bg-amber-606 text-slate-955 text-xs font-bold px-4 py-2 rounded-xl transition font-mono">Deploy Workpiece Specs</button>
         </div>
       </form>
     </div>
   </div>
 
   <!-- Add Site Clearance Log Modal -->
-  <div id="addSiteMeasureModal" class="fixed inset-0 bg-slate-905/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden animate-fade-in">
+  <div id="addSiteMeasureModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden animate-fade-in">
     <div class="bg-white border border-slate-200 w-full max-w-xl rounded-2xl overflow-hidden shadow-xl">
       <div class="flex items-center justify-between p-4 border-b border-slate-100">
         <h3 id="site-modal-heading" class="font-extrabold text-xs uppercase tracking-wider text-slate-707 flex items-center gap-2 font-mono">
@@ -833,7 +894,7 @@
             </div>
 
             <div>
-              <span class="block text-[10px] text-slate-450 uppercase font-black tracking-wide mb-1.5 font-mono">Measured Clearances</span>
+              <span class="block text-[10px] text-slate-405 uppercase font-black tracking-wide mb-1.5 font-mono">Measured Clearances</span>
               <div class="grid grid-cols-2 gap-3">
                 <!-- Site Length -->
                 <div>
@@ -917,7 +978,7 @@
           <div class="flex flex-col gap-3">
             <div>
               <label class="block text-[10px] text-slate-405 uppercase font-black mb-1 font-mono">Obstacles & Physical Constraints</label>
-              <textarea id="site-notes" rows="4" placeholder="Identify outlets, baseboards, floor vents, trim mold, plumbing profiles..." class="w-full bg-slate-55 border border-slate-200 text-slate-800 placeholder:text-slate-404 rounded-xl p-3 text-xs focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500/35 resize-none font-sans"></textarea>
+              <textarea id="site-notes" rows="4" placeholder="Identify outlets, baseboards, floor vents, trim mold, plumbing profiles..." class="w-full bg-slate-50 border border-slate-200 text-slate-800 placeholder:text-slate-404 rounded-xl p-3 text-xs focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500/35 resize-none font-sans"></textarea>
             </div>
 
             <div>
@@ -1043,7 +1104,7 @@
     <div class="max-w-4xl w-full flex flex-col gap-3" onclick="event.stopPropagation()">
       <img id="lightbox-image" src="" alt="Blueprint Detail View" class="max-h-[80vh] w-auto mx-auto rounded-2xl object-contain border border-slate-202 shadow-xl bg-slate-100" />
       <div class="text-center">
-        <h4 id="lightbox-caption" class="text-xs font-mono font-black text-amber-700 tracking-wider uppercase drop-shadow"></h4>
+        <h4 id="lightbox-caption" class="text-xs font-mono font-black text-amber-707 tracking-wider uppercase drop-shadow"></h4>
       </div>
     </div>
   </div>
@@ -1169,30 +1230,132 @@
       return auth?.currentUser?.uid || 'default-guest';
     };
 
-    // PWA Chrome Installation Observer & Controller
-    let deferredPrompt;
+    // =========================================================================
+    // PROGRESSIVE WEB APP (PWA) INSTALLATION SERVICE WORKER & PROMPT HANDLING
+    // =========================================================================
+    let deferredPrompt = null;
+
+    // Compile and register a light, self-contained service worker on scope
+    const initAppServiceWorker = async () => {
+      if ('serviceWorker' in navigator) {
+        try {
+          const swCode = `
+            self.addEventListener('install', (e) => {
+              self.skipWaiting();
+            });
+            self.addEventListener('activate', (e) => {
+              e.waitUntil(clients.claim());
+            });
+            self.addEventListener('fetch', (e) => {
+              // Graceful network pass-through supporting standalone fallback mode
+              e.respondWith(fetch(e.request).catch(() => new Response('Workspace Offline Sandbox Active')));
+            });
+          `;
+          const blob = new Blob([swCode], { type: 'application/javascript' });
+          const swUrl = URL.createObjectURL(blob);
+          await navigator.serviceWorker.register(swUrl);
+          console.log("Atelier local sandbox PWA engine initialized.");
+        } catch (err) {
+          console.warn("Service worker registration bypassed by execution frame:", err.message);
+        }
+      }
+    };
+
+    // Standard beforeinstallprompt event hook
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
       deferredPrompt = e;
+      
+      // Update download modal action buttons dynamically
       const installBtn = document.getElementById('btn-android-install');
+      const fallbackTip = document.getElementById('fallback-install-tip');
+      
       if (installBtn) {
-        installBtn.classList.remove('opacity-50', 'cursor-not-allowed');
-        installBtn.disabled = false;
-        installBtn.textContent = "Deploy Android App";
+        installBtn.textContent = "Deploy Native App";
+        installBtn.className = "w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-black py-2.5 rounded-lg text-[10px] tracking-wide uppercase transition font-mono shadow-md animate-bounce";
+      }
+      if (fallbackTip) {
+        fallbackTip.textContent = "✓ High-speed native install prompt compiled and ready!";
+        fallbackTip.className = "text-[9px] text-emerald-600 text-center font-bold tracking-tight font-mono";
       }
     });
 
+    // Native Standalone Display Mode UI state sync
+    const checkStandaloneDisplayMode = () => {
+      const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+      
+      if (isStandalone) {
+        // App is already running natively
+        const headerBtn = document.getElementById('header-install-btn');
+        const headerBtnText = document.getElementById('header-install-btn-text');
+        const activeBanner = document.getElementById('installed-active-banner');
+        const androidBtn = document.getElementById('btn-android-install');
+        const fallbackTip = document.getElementById('fallback-install-tip');
+
+        if (headerBtnText) headerBtnText.textContent = "✓ Running in App Mode";
+        if (headerBtn) {
+          headerBtn.className = "hidden sm:flex items-center gap-1.5 bg-emerald-50 text-emerald-800 text-xs px-3.5 py-2 rounded-xl border border-emerald-200 font-bold transition shadow-sm pointer-events-none";
+        }
+        if (activeBanner) activeBanner.classList.remove('hidden');
+        if (androidBtn) {
+          androidBtn.disabled = true;
+          androidBtn.textContent = "App Already Configured";
+          androidBtn.className = "w-full bg-emerald-600 text-white font-black py-2.5 rounded-lg text-[10px] tracking-wide uppercase transition font-mono cursor-not-allowed opacity-90";
+        }
+        if (fallbackTip) {
+          fallbackTip.textContent = "Status: Connected as local home screen client.";
+          fallbackTip.className = "text-[9px] text-emerald-600 text-center font-mono italic";
+        }
+      } else {
+        // App is running inside a standard tab or preview frame
+        const installBtn = document.getElementById('btn-android-install');
+        const fallbackTip = document.getElementById('fallback-install-tip');
+        const listContainer = document.getElementById('android-instructions-list');
+        
+        if (installBtn && !deferredPrompt) {
+          // If no browser install prompt arrived (e.g. inside iframe, or iOS browser, or desktop Firefox)
+          installBtn.textContent = "Manual Quick-Save Guide";
+          installBtn.className = "w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-2.5 rounded-lg text-[10px] tracking-wide uppercase transition font-mono";
+        }
+        if (fallbackTip && !deferredPrompt) {
+          fallbackTip.textContent = "Device is presently in workspace sandbox mode.";
+        }
+        if (listContainer && !deferredPrompt) {
+          listContainer.innerHTML = `
+            <li>Click your browser's <strong class="text-slate-800">Menu</strong> (three dots/share icon).</li>
+            <li>Select <strong class="text-slate-800">Install App</strong> or <strong class="text-slate-800">Add to Home Screen</strong>.</li>
+            <li>Launch seamlessly from your app drawer offline.</li>
+          `;
+        }
+      }
+    };
+
+    // Dynamic launch installer script
     window.triggerAndroidPWAInstall = async () => {
-      if (!deferredPrompt) {
-        triggerToast("Chrome installation criteria not loaded yet. Tap Chrome's menu -> 'Add to Home Screen' manually.", "warning");
-        return;
+      const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+      if (isStandalone) return;
+
+      if (deferredPrompt) {
+        // Trigger browser's native install sheet
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        if (outcome === 'accepted') {
+          triggerToast("PWA App installation approved! Pinning to home screen.");
+          checkStandaloneDisplayMode();
+        }
+        deferredPrompt = null;
+      } else {
+        // Fallback info modal for environments where prompt is restricted (e.g., inside iframe preview)
+        requestConfirm(
+          "Pin Sizing Workspace to Home Screen?",
+          "Your current browser frame is waiting for standard PWA triggers, or is embedded. Tap your browser's option menu (⋮ or Share icon) -> select 'Install App' or 'Add to Home Screen' to launch full-screen natively.",
+          () => {
+            triggerToast("Follow manual browser options to pin.", "warning");
+          },
+          "default",
+          "Got It"
+        );
       }
-      deferredPrompt.prompt();
-      const { outcome } = await deferredPrompt.userChoice;
-      if (outcome === 'accepted') {
-        triggerToast("PWA App installation approved!");
-      }
-      deferredPrompt = null;
     };
 
     // Attempt Firebase Bootstrap with strict Auth rule checks
@@ -1379,7 +1542,7 @@
           triggerToast("Shared layout specifications not found.", "error");
         }
       }, (error) => {
-        console.error("Portal share subscriber fetch failed:", error);
+        console.error("Portal share observer fetch failed:", error);
         triggerToast("Unable to load shared workspace specs.", "error");
       });
     };
@@ -1395,12 +1558,12 @@
       errorBox.classList.add('hidden');
 
       if (mode === 'login') {
-        tabLogin.className = "flex-1 py-3 text-center text-xs font-bold uppercase font-mono border-b-2 border-amber-500 text-amber-605";
+        tabLogin.className = "flex-1 py-3 text-center text-xs font-bold uppercase font-mono border-b-2 border-amber-500 text-amber-655";
         tabRegister.className = "flex-1 py-3 text-center text-xs font-bold uppercase font-mono border-b-2 border-transparent text-slate-400 hover:text-slate-750";
         submitBtn.textContent = "Deploy Session";
       } else {
         tabLogin.className = "flex-1 py-3 text-center text-xs font-bold uppercase font-mono border-b-2 border-transparent text-slate-400 hover:text-slate-750";
-        tabRegister.className = "flex-1 py-3 text-center text-xs font-bold uppercase font-mono border-b-2 border-amber-500 text-amber-605";
+        tabRegister.className = "flex-1 py-3 text-center text-xs font-bold uppercase font-mono border-b-2 border-amber-500 text-amber-655";
         submitBtn.textContent = "Create Account";
       }
     };
@@ -1678,12 +1841,12 @@
               <div class="flex items-center justify-between gap-1 mb-1">
                 <h4 class="font-bold text-xs text-slate-805 truncate">${client.name}</h4>
                 <span class="text-[9px] px-1.5 py-0.5 rounded font-mono font-semibold ${
-                  client.status === 'Approved' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' :
-                  client.status === 'In Production' ? 'bg-amber-50 text-amber-705 border border-amber-202' : 'bg-slate-100 text-slate-500 border border-slate-202'
+                  client.status === 'Approved' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
+                  client.status === 'In Production' ? 'bg-amber-50 text-amber-705 border-amber-202' : 'bg-slate-100 text-slate-500 border-slate-202'
                 }">${client.status || 'Design'}</span>
               </div>
               <p class="text-[11px] text-slate-500 truncate mb-2">${client.notes || 'No project description brief registered.'}</p>
-              <div class="flex items-center justify-between text-[10px] text-slate-400 border-t border-slate-100 pt-2 mt-1">
+              <div class="flex items-center justify-between text-[10px] text-slate-404 border-t border-slate-100 pt-2 mt-1">
                 <span class="flex items-center gap-1.5 font-mono text-slate-505">
                   <i data-lucide="layers" class="w-3 h-3 text-slate-404"></i><span>${itemLength} items</span>
                   <span class="text-slate-305">•</span>
@@ -1890,7 +2053,7 @@
                   <div class="p-4 flex-1 flex flex-col gap-3">
                     <div class="flex items-start justify-between">
                       <div class="flex-1 min-w-0 pr-2">
-                        <h4 class="font-extrabold text-xs text-slate-805 group-hover:text-amber-700 transition-colors truncate">${item.title}</h4>
+                        <h4 class="font-extrabold text-xs text-slate-805 group-hover:text-amber-707 transition-colors truncate">${item.title}</h4>
                         ${item.notes ? `<p class="text-[11px] text-slate-500 mt-1.5 line-clamp-2 leading-relaxed italic">"${item.notes}"</p>` : ''}
                       </div>
                       <div class="flex items-center gap-1 flex-shrink-0">
@@ -2053,7 +2216,7 @@
       }
 
       streamContainer.innerHTML = activeClient.feedback.map(f => {
-        const senderColor = f.sender === 'Client' ? 'text-amber-700' : f.sender === 'System' ? 'text-emerald-600 font-extrabold' : 'text-slate-505';
+        const senderColor = f.sender === 'Client' ? 'text-amber-707' : f.sender === 'System' ? 'text-emerald-600 font-extrabold' : 'text-slate-500';
         return `
           <div class="bg-slate-50 p-3 rounded-xl border border-slate-100 text-[11px] leading-relaxed animate-fade-in">
             <div class="flex items-center justify-between mb-1.5">
@@ -2236,6 +2399,9 @@
     // Dialog trigger controls
     window.openModal = (id) => {
       document.getElementById(id)?.classList.remove('hidden');
+      if (id === 'downloadAppModal') {
+        checkStandaloneDisplayMode();
+      }
     };
 
     window.closeModal = (id) => {
@@ -2320,7 +2486,7 @@
         if (iconSaved) iconInput.value = '';
       }
 
-      // Re-compile Android dynamic PWA Web Manifest configurations
+      // Re-compile Android PWA Web Manifest configurations
       updateWebManifest();
 
       // Cloud Persistence configuration
@@ -2972,13 +3138,13 @@
       badge.className = `text-xs px-3 py-1 rounded-full font-bold uppercase tracking-wider border ${
         client.status === 'Approved' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
         client.status === 'In Production' ? 'bg-amber-50 text-amber-705 border-amber-202' :
-        'bg-slate-50 text-slate-606 border-slate-202'
+        'bg-slate-50 text-slate-600 border-slate-200'
       }`;
 
       const actionContainer = document.getElementById('client-portal-signoff-action-container');
       if (client.status !== 'Approved') {
         actionContainer.innerHTML = `
-          <button onclick="approveClientPortalSpecs()" class="bg-amber-500 hover:bg-amber-606 text-slate-955 font-black px-5 py-3 rounded-xl shadow-md shadow-amber-500/10 transition active:scale-95 flex items-center gap-1.5 text-xs uppercase tracking-wider">
+          <button onclick="approveClientPortalSpecs()" class="bg-amber-500 hover:bg-amber-600 text-slate-900 font-black px-5 py-3 rounded-xl shadow-md shadow-amber-500/10 transition active:scale-95 flex items-center gap-1.5 text-xs uppercase tracking-wider">
             <i data-lucide="check-circle" class="w-4 h-4 stroke-[2.5]"></i> Signoff & Lock Specs
           </button>
         `;
@@ -2997,12 +3163,12 @@
       appState.portalTab = tab;
       
       document.getElementById('portal-tab-workpieces').className = tab === 'workpieces' 
-        ? "pb-3 text-xs font-black uppercase tracking-widest flex items-center gap-2 border-b-2 border-amber-500 text-amber-606 transition"
-        : "pb-3 text-xs font-black uppercase tracking-widest flex items-center gap-2 border-b-2 border-transparent text-slate-500 hover:text-slate-805 transition";
+        ? "pb-3 text-xs font-black uppercase tracking-widest flex items-center gap-2 border-b-2 border-amber-500 text-amber-707 transition"
+        : "pb-3 text-xs font-black uppercase tracking-widest flex items-center gap-2 border-b-2 border-transparent text-slate-500 hover:text-slate-850 transition";
 
       document.getElementById('portal-tab-site').className = tab === 'site-measures' 
         ? "pb-3 text-xs font-black uppercase tracking-widest flex items-center gap-2 border-b-2 border-amber-505 transition"
-        : "pb-3 text-xs font-black uppercase tracking-widest flex items-center gap-2 border-b-2 border-transparent text-slate-500 hover:text-slate-805 transition";
+        : "pb-3 text-xs font-black uppercase tracking-widest flex items-center gap-2 border-b-2 border-transparent text-slate-500 hover:text-slate-850 transition";
 
       renderPortalTabContent();
     };
@@ -3128,6 +3294,7 @@
                           <i data-lucide="zoom-in" class="w-3.5 h-3.5 text-amber-505"></i> Click to Zoom Clearance Image
                         </span>
                       </div>
+                    </div>
                     ` : `
                       <div class="text-center text-slate-404 flex flex-col items-center gap-1.5">
                         <i data-lucide="camera" class="w-8 h-8 stroke-[1.2] mb-1"></i>
@@ -3186,7 +3353,7 @@
           <div class="bg-slate-50 p-3 rounded-2xl border border-slate-100 text-[11px] leading-relaxed">
             <div class="flex items-center justify-between mb-1.5">
               <span class="font-extrabold text-[8px] uppercase tracking-wider ${
-                f.sender === 'Client' ? 'text-amber-705' : f.sender === 'System' ? 'text-emerald-600 font-extrabold' : 'text-slate-500'
+                f.sender === 'Client' ? 'text-amber-750' : f.sender === 'System' ? 'text-emerald-600 font-extrabold' : 'text-slate-500'
               } font-mono">${f.sender}</span>
               <span class="text-[9px] text-slate-404 font-mono">${new Date(f.timestamp).toLocaleDateString()}</span>
             </div>
@@ -3407,6 +3574,7 @@
         applyCustomAppIcon(defaultIconBase64);
       }
       initializeFirebase();
+      initAppServiceWorker(); // Register PWA components
       renderCategoryFilters();
       updateWebManifest();
       lucide.createIcons();
